@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import type { MissionStatus } from '../types';
 import { getMissionStatus } from '../services/missionStatus';
 
@@ -9,7 +9,20 @@ interface KnockMeterProps {
 
 const KnockMeter = ({ knocks, maxKnocks }: KnockMeterProps) => {
   const [missionStatus, setMissionStatus] = useState<MissionStatus | null>(null);
+  const [showExplosion, setShowExplosion] = useState(false);
+  const [signalBars, setSignalBars] = useState([true, true, false]);
+  const prevKnocks = useRef(knocks);
   const percentage = Math.min((knocks / maxKnocks) * 100, 100);
+
+  // Trigger explosion effect when knocks change
+  useEffect(() => {
+    if (prevKnocks.current !== knocks) {
+      setShowExplosion(true);
+      const timer = setTimeout(() => setShowExplosion(false), 400);
+      prevKnocks.current = knocks;
+      return () => clearTimeout(timer);
+    }
+  }, [knocks]);
 
   useEffect(() => {
     // Update mission status when knocks change
@@ -21,6 +34,24 @@ const KnockMeter = ({ knocks, maxKnocks }: KnockMeterProps) => {
     const interval = setInterval(() => {
       setMissionStatus(getMissionStatus(knocks));
     }, 30000);
+    return () => clearInterval(interval);
+  }, [knocks]);
+
+  // Animate signal bars randomly
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Random signal strength based on activity
+      const baseStrength = Math.min(3, Math.floor(knocks / 25) + 1);
+      const variation = Math.random() > 0.7 ? (Math.random() > 0.5 ? 1 : -1) : 0;
+      const strength = Math.max(1, Math.min(3, baseStrength + variation));
+
+      setSignalBars([
+        strength >= 1,
+        strength >= 2,
+        strength >= 3
+      ]);
+    }, 800 + Math.random() * 400);
+
     return () => clearInterval(interval);
   }, [knocks]);
 
@@ -52,10 +83,22 @@ const KnockMeter = ({ knocks, maxKnocks }: KnockMeterProps) => {
         </div>
         <div className="text-right">
           <div className="text-[10px] text-gray-500 font-mono">EXT_SIGNAL</div>
-          <div className="flex gap-1">
-            <div className="w-1 h-3 bg-[#ff6b00]"></div>
-            <div className="w-1 h-3 bg-[#ff6b00]"></div>
-            <div className="w-1 h-3 bg-gray-700"></div>
+          <div className="flex gap-1 items-end h-4">
+            <div
+              className={`w-1 transition-all duration-200 ${
+                signalBars[0] ? 'h-2 bg-[#ff6b00] shadow-[0_0_4px_#ff6b00]' : 'h-2 bg-gray-700'
+              }`}
+            />
+            <div
+              className={`w-1 transition-all duration-200 ${
+                signalBars[1] ? 'h-3 bg-[#ff6b00] shadow-[0_0_4px_#ff6b00]' : 'h-3 bg-gray-700'
+              }`}
+            />
+            <div
+              className={`w-1 transition-all duration-200 ${
+                signalBars[2] ? 'h-4 bg-[#ff6b00] shadow-[0_0_4px_#ff6b00]' : 'h-4 bg-gray-700'
+              }`}
+            />
           </div>
         </div>
       </div>
@@ -86,8 +129,36 @@ const KnockMeter = ({ knocks, maxKnocks }: KnockMeterProps) => {
               strokeLinecap="butt"
             />
           </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
-            <span className="text-3xl font-black text-white">{knocks}</span>
+
+          {/* Explosion effect */}
+          {showExplosion && (
+            <>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-16 h-16 rounded-full bg-[#ff6b00]/30 animate-ping" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-12 h-12 rounded-full bg-[#ff6b00]/50 animate-pulse" />
+              </div>
+              {/* Particle burst */}
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 bg-[#ff6b00] rounded-full animate-particle"
+                  style={{
+                    left: '50%',
+                    top: '50%',
+                    transform: `rotate(${i * 45}deg) translateY(-20px)`,
+                    animationDelay: `${i * 30}ms`
+                  }}
+                />
+              ))}
+            </>
+          )}
+
+          <div className={`absolute inset-0 flex flex-col items-center justify-center leading-none transition-transform duration-100 ${showExplosion ? 'scale-110' : 'scale-100'}`}>
+            <span className={`text-3xl font-black text-white transition-all duration-100 ${showExplosion ? 'text-[#ff6b00] drop-shadow-[0_0_10px_#ff6b00]' : ''}`}>
+              {knocks}
+            </span>
             <span className="text-[10px] text-gray-400 font-mono">/ {maxKnocks}</span>
           </div>
         </div>
@@ -126,10 +197,20 @@ const KnockMeter = ({ knocks, maxKnocks }: KnockMeterProps) => {
         </div>
       </div>
 
-      {/* Bottom Bar Decor */}
+      {/* Bottom Bar Decor - animated */}
       <div className="mt-4 flex gap-1 h-1">
         {[...Array(20)].map((_, i) => (
-          <div key={i} className={`flex-1 ${i < knocks / 5 ? 'bg-[#ff6b00]' : 'bg-white/10'}`}></div>
+          <div
+            key={i}
+            className={`flex-1 transition-all duration-300 ${
+              i < knocks / 5
+                ? 'bg-[#ff6b00] shadow-[0_0_4px_#ff6b00]'
+                : 'bg-white/10'
+            }`}
+            style={{
+              transitionDelay: `${i * 20}ms`
+            }}
+          />
         ))}
       </div>
     </div>
