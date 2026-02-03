@@ -1,6 +1,23 @@
 # Arc Raiders Knock-o-Meter
 
-A live, reactive stream overlay widget for tracking your knock count in Arc Raiders. Updates in real-time across OBS and your control panel.
+A live, reactive stream overlay widget for tracking your knock count in Arc Raiders. Updates in real-time across OBS and your control panel with dramatic explosion animations.
+
+![Knock-o-Meter Preview](https://img.shields.io/badge/Arc%20Raiders-Knock--o--Meter-ff6b00?style=for-the-badge)
+
+## Live Demo
+
+- **Control Panel**: https://knock-o-meter.vercel.app/control
+- **Overlay (for OBS)**: https://knock-o-meter.vercel.app/overlay
+
+## Features
+
+- **Real-time sync** - Changes appear instantly on your stream via Firebase
+- **Dramatic explosion effects** - Circle shakes, particles burst, numbers animate
+- **Dynamic signal bars** - EXT_SIGNAL indicator fluctuates based on knock count
+- **Threat level system** - LOW/MEDIUM/HIGH/EXTREME based on your kill count
+- **Mission status messages** - Rotating sci-fi radio chatter
+- **Arc Raiders aesthetic** - Matches the game's UI style
+- **Transparent background** - Perfect for OBS browser source overlay
 
 ## How It Works
 
@@ -10,8 +27,14 @@ A live, reactive stream overlay widget for tracking your knock count in Arc Raid
 
 ## Setup
 
-### 1. Create Firebase Project (Free)
+### 1. Create Firebase Project (Free - Spark Plan)
 
+Firebase Spark plan is completely free with no credit card required:
+- 1GB storage
+- 10GB/month downloads
+- 100 simultaneous connections
+
+Steps:
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Click "Create a project" (or use existing)
 3. Name it something like "knock-o-meter"
@@ -58,15 +81,46 @@ VITE_FIREBASE_APP_ID=your_app_id
 
 ### 6. Add to OBS
 
-1. In OBS, add a new "Browser" source
-2. Set URL to: `https://your-app.vercel.app/overlay`
-3. Set Width: `340`, Height: `300`
-4. Check "Shutdown source when not visible"
-5. Position where you want on your stream
+1. In OBS, click **+** under Sources
+2. Select **Browser**
+3. Name it "Knock-o-Meter"
+4. Set URL to: `https://your-app.vercel.app/overlay`
+5. Set Width: **340**, Height: **300**
+6. Check "Shutdown source when not visible"
+7. Click **OK**
+8. Position where you want on your stream
 
 ### 7. Control Your Stream
 
 Open `https://your-app.vercel.app/control` in your browser while streaming. Any changes you make will instantly appear on your OBS overlay!
+
+## Animation Features
+
+When the knock count changes, the following animations trigger:
+
+1. **Circle shake/wobble** - The entire counter shakes violently
+2. **Central flash** - Big orange explosion in the center
+3. **Expanding ring** - Shockwave ring expands outward
+4. **Particle burst** - 12 particles fly out in all directions
+5. **Sparks** - 8 elongated sparks shoot outward
+6. **Number wipe-out** - Old number scales up, rotates, and blurs away
+7. **Number appear** - New number bounces in from nothing
+8. **Glow effect** - New number pulses bright orange then settles
+
+### Signal Bars
+
+The EXT_SIGNAL bars animate based on your knock count:
+- 0-24 knocks: 1 bar (weak signal)
+- 25-49 knocks: 2 bars (medium signal)
+- 50+ knocks: 3 bars (strong signal)
+- Random fluctuations add realism
+
+### Threat Levels
+
+- **LOW** (0-19): Blue indicator
+- **MEDIUM** (20-49): Yellow indicator
+- **HIGH** (50-79): Orange indicator
+- **EXTREME** (80+): Red indicator with glow
 
 ## Local Development
 
@@ -79,13 +133,39 @@ Open http://localhost:5173
 
 ## Keyboard Shortcuts (Control Panel)
 
-- `+` / `=` - Increment knock count
-- `-` / `_` - Decrement knock count
-- `H` - Toggle help panel
+| Key | Action |
+|-----|--------|
+| `+` / `=` | Increment knock count |
+| `-` / `_` | Decrement knock count |
+| `H` | Toggle help panel |
+
+## Project Structure
+
+```
+knock-o-meter/
+├── src/
+│   ├── components/
+│   │   ├── KnockMeter.tsx      # Main overlay widget with animations
+│   │   └── ControlPanel.tsx    # Control buttons/slider
+│   ├── pages/
+│   │   ├── Overlay.tsx         # /overlay route for OBS
+│   │   └── Control.tsx         # /control route for streamer
+│   ├── config/
+│   │   └── firebase.ts         # Firebase real-time sync
+│   ├── services/
+│   │   └── missionStatus.ts    # Mission chatter messages
+│   ├── types.ts
+│   ├── index.css               # Tailwind + animations
+│   ├── App.tsx                 # Router
+│   └── main.tsx
+├── .env.example                # Template for Firebase config
+├── vercel.json                 # SPA routing for Vercel
+└── README.md
+```
 
 ## Securing Firebase (Optional but Recommended)
 
-After testing, update your Firebase Realtime Database rules:
+The default test mode rules allow anyone to read/write. For personal use this is fine, but for production consider:
 
 ```json
 {
@@ -96,12 +176,24 @@ After testing, update your Firebase Realtime Database rules:
 }
 ```
 
-For production, consider adding authentication.
+Or add authentication for write access.
 
 ## Tech Stack
 
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- Firebase Realtime Database
-- Vercel (hosting)
+- **React 19** + TypeScript
+- **Vite** - Fast build tool
+- **Tailwind CSS** - Utility-first styling
+- **Firebase Realtime Database** - Real-time sync
+- **Vercel** - Hosting with automatic deployments
+- **React Router** - Client-side routing
+
+## Cost
+
+**$0/month** - Everything used is on free tiers:
+- Firebase Spark plan (free)
+- Vercel hobby plan (free)
+- GitHub (free)
+
+## License
+
+MIT
