@@ -184,14 +184,18 @@ const KnockMeter = ({ knocks, maxKnocks }: KnockMeterProps) => {
 
           {/* Number display with wipe/rebuild animation */}
           <div className="absolute inset-0 flex flex-col items-center justify-center leading-none overflow-hidden">
-            {/* Old number wiping away */}
-            <div className={`relative ${isExploding ? 'animate-wipe-out' : ''} ${isRebuilding ? 'hidden' : ''}`}>
-              <span className={`text-3xl font-black ${isExploding ? 'text-[#ff6b00]' : 'text-white'}`}>
-                {isExploding ? prevKnocks.current : displayKnocks}
-              </span>
-            </div>
+            {/* Only show ONE number at a time based on phase */}
 
-            {/* New number appearing */}
+            {/* Exploding: Old number wiping away */}
+            {isExploding && (
+              <div className="animate-wipe-out">
+                <span className="text-3xl font-black text-[#ff6b00]">
+                  {displayKnocks}
+                </span>
+              </div>
+            )}
+
+            {/* Rebuilding: New number appearing */}
             {isRebuilding && (
               <div className="animate-number-appear">
                 <span className="text-3xl font-black text-[#ff6b00] drop-shadow-[0_0_20px_#ff6b00] animate-number-glow">
@@ -200,7 +204,7 @@ const KnockMeter = ({ knocks, maxKnocks }: KnockMeterProps) => {
               </div>
             )}
 
-            {/* Idle state */}
+            {/* Idle: Static number */}
             {explosionPhase === 'idle' && (
               <span className="text-3xl font-black text-white">
                 {displayKnocks}
