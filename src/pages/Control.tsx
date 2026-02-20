@@ -9,7 +9,7 @@ import type { KnockData } from '../config/firebase';
 const Control = () => {
   const [knockData, setKnockData] = useState<KnockData>({
     knocks: 0,
-    maxKnocks: 100,
+    maxKnocks: 150,
     lastUpdated: Date.now()
   });
   const [showHelp, setShowHelp] = useState(true);
