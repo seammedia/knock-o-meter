@@ -17,7 +17,12 @@ const Control = () => {
   useEffect(() => {
     // Subscribe to real-time updates from Firebase
     const unsubscribe = subscribeToKnocks((data) => {
-      setKnockData(data);
+      // If maxKnocks in DB is stale, update it to 150
+      if (data.maxKnocks !== 150) {
+        updateKnocks(data.knocks, 150);
+      } else {
+        setKnockData(data);
+      }
     });
 
     return () => unsubscribe();
