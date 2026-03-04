@@ -9,7 +9,7 @@ import type { KnockData } from '../config/firebase';
 const Overlay = () => {
   const [knockData, setKnockData] = useState<KnockData>({
     knocks: 0,
-    maxKnocks: 150,
+    maxKnocks: 200,
     lastUpdated: Date.now()
   });
 
