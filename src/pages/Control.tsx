@@ -9,7 +9,7 @@ import type { KnockData } from '../config/firebase';
 const Control = () => {
   const [knockData, setKnockData] = useState<KnockData>({
     knocks: 0,
-    maxKnocks: 250,
+    maxKnocks: 300,
     lastUpdated: Date.now()
   });
   const [showHelp, setShowHelp] = useState(true);
@@ -18,8 +18,8 @@ const Control = () => {
     // Subscribe to real-time updates from Firebase
     const unsubscribe = subscribeToKnocks((data) => {
       // If maxKnocks in DB is stale, update it to 150
-      if (data.maxKnocks !== 250) {
-        updateKnocks(data.knocks, 250);
+      if (data.maxKnocks !== 300) {
+        updateKnocks(data.knocks, 300);
       } else {
         setKnockData(data);
       }
