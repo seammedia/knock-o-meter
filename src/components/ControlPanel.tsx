@@ -75,7 +75,7 @@ const ControlPanel = ({ knocks, setKnocks, maxKnocks, isVisible = true }: Contro
         <div>
           <label className="text-[10px] text-zinc-500 block mb-2">PRESETS</label>
           <div className="grid grid-cols-5 gap-2">
-            {[0, 75, 150, 225, 300].map((val) => (
+            {[0, 100, 200, 300, 400].map((val) => (
               <button
                 key={val}
                 onClick={() => setKnocks(val)}

@@ -34,7 +34,7 @@ export const subscribeToKnocks = (callback: (data: KnockData) => void) => {
       callback(data);
     } else {
       // Initialize with defaults if no data exists
-      const defaultData: KnockData = { knocks: 0, maxKnocks: 300, lastUpdated: Date.now() };
+      const defaultData: KnockData = { knocks: 0, maxKnocks: 400, lastUpdated: Date.now() };
       callback(defaultData);
     }
   });
@@ -50,7 +50,7 @@ export const updateKnocks = async (knocks: number, maxKnocks: number = 250) => {
 
 export const getKnocks = async (): Promise<KnockData> => {
   const snapshot = await get(knocksRef);
-  return snapshot.val() || { knocks: 0, maxKnocks: 300, lastUpdated: Date.now() };
+  return snapshot.val() || { knocks: 0, maxKnocks: 400, lastUpdated: Date.now() };
 };
 
 export { database };
